@@ -10,7 +10,6 @@
  
 import numpy as np
 import pandas as pd
-import openpyxl
 
 # Store the final transformed coordinate data 
 data_rows = []

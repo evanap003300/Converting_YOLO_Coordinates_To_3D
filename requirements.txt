@@ -3,4 +3,3 @@ defisheye
 pandas
 numpy
 pillow
-openpyxl
