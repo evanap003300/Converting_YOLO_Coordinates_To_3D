@@ -3,3 +3,6 @@ defisheye
 pandas
 numpy
 pillow
+tensorflow
+scikit-learn
+joblib
