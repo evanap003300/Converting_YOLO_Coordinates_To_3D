@@ -109,11 +109,9 @@ python src/plotting/plot_results.py
 The machine learning model successfully converts fisheye camera coordinates to 3D OptiTrack coordinates with varying accuracy across dimensions:
 - Best performance in X-axis (3.5cm MAE)
 - Moderate performance in Z-axis (~12cm MAE)
-- Most challenging in Y-axis (16.3cm MAE)
+- Worst performance in Y-axis (16.3cm MAE)
 
 Detailed visualizations of model performance can be found in the `data/plots/` directory.
 
 ## Notes
 - All coordinate measurements are in millimeters
-- Model performance varies by axis due to camera positioning and perspective effects
-- Multiple viewing angles of 3D trajectories are provided for comprehensive analysis
