@@ -5,7 +5,6 @@ import tensorflow as tf
 import joblib
 
 def load_model_and_scalers():
-    """Load the trained model and scalers."""
     models_dir = Path(__file__).parents[2] / 'models'
     
     # Load model
@@ -19,12 +18,11 @@ def load_model_and_scalers():
     return model, x_scaler, y_scaler
 
 def load_data():
-    """Load the input coordinates file."""
+    # Load the input coordinates file
     data_path = Path(__file__).parents[2] / 'data' / 'processed' / 'input_coordinates.xlsx'
     return pd.read_excel(data_path)
 
 def make_predictions(model, x_scaler, y_scaler, df):
-    """Make predictions using the trained model."""
     # Extract features
     X = df[['x1', 'y1', 'x2', 'y2']].values
     
@@ -40,7 +38,6 @@ def make_predictions(model, x_scaler, y_scaler, df):
     return y_pred
 
 def create_output_dataframe(df, predictions):
-    """Create output dataframe with predictions and actual values."""
     output_df = pd.DataFrame()
     
     # Add time column
@@ -59,7 +56,6 @@ def create_output_dataframe(df, predictions):
     return output_df
 
 def calculate_errors(df):
-    """Calculate prediction errors."""
     pred_cols = ['pred_x', 'pred_y', 'pred_z']
     actual_cols = ['x_opt', 'y_opt', 'z_opt']
     

@@ -11,7 +11,6 @@ import joblib
 from pathlib import Path
 
 def load_and_prepare_data():
-    """Load the data and split into features and target."""
     # Load data
     data_path = Path(__file__).parents[2] / 'data' / 'processed' / 'input_coordinates.xlsx'
     df = pd.read_excel(data_path)
@@ -23,7 +22,6 @@ def load_and_prepare_data():
     return X, y
 
 def normalize_and_split_data(X, y):
-    """Normalize features and targets, then split into train/validation/test sets."""
     # Initialize and fit scalers - using RobustScaler for better handling of outliers
     x_scaler = RobustScaler()
     y_scaler = RobustScaler()
@@ -53,8 +51,6 @@ def normalize_and_split_data(X, y):
     return (x_scaler, y_scaler), (X_train, y_train), (X_val, y_val), (X_test, y_test)
 
 def build_model(input_dim):
-    """Create the MLP model architecture."""
-    # Use gradient clipping and a smaller learning rate
     optimizer = Adam(learning_rate=0.001, clipnorm=1.0)
     
     # Initialize with small random weights
@@ -84,7 +80,7 @@ def build_model(input_dim):
     
     model.compile(
         optimizer=optimizer,
-        loss=tf.keras.losses.Huber(delta=1.0),  # More robust to outliers than MSE
+        loss=tf.keras.losses.Huber(delta=1.0),
         metrics=['mae']
     )
     
@@ -100,7 +96,6 @@ class CustomCallback(tf.keras.callbacks.Callback):
                     logs[metric] = 1e6
 
 def train_model():
-    """Main function to train and save the model."""
     print("Loading data...")
     X, y = load_and_prepare_data()
     

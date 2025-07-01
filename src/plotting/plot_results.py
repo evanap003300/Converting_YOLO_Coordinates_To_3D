@@ -1,3 +1,20 @@
+"""
+This script creates comprehensive visualizations of the ML model's performance in converting
+fisheye camera coordinates to 3D OptiTrack coordinates. It generates multiple types of plots
+to analyze prediction accuracy, error distributions, and trajectory comparisons.
+
+The script creates the following visualizations:
+1. Scatter plots: Compare predicted vs true values for each coordinate (X, Y, Z)
+2. 3D trajectory: Shows the complete path in 3D space from multiple viewing angles
+3. Error over time: Tracks prediction accuracy throughout the sequence
+4. Error distribution: Shows error patterns for each coordinate using violin plots
+
+All plots are saved to the data/plots/ directory with 300 DPI resolution.
+
+Author: Evan Phillips
+Date: 2024
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,12 +23,29 @@ from pathlib import Path
 import seaborn as sns
 
 def load_predictions():
-    """Load the predictions file."""
+    """
+    Load the ML model predictions from the Excel file.
+    
+    Returns:
+        pandas.DataFrame: DataFrame containing predicted and true coordinates
+    """
     data_path = Path(__file__).parents[2] / 'data' / 'predictions' / 'mlp_predictions.xlsx'
     return pd.read_excel(data_path)
 
 def create_scatter_plots(df, save_dir):
-    """Create scatter plots comparing predicted vs true values for each coordinate."""
+    """
+    Create scatter plots comparing predicted vs true values for each coordinate.
+    
+    For each coordinate (X, Y, Z):
+    - Plots predicted values against true values
+    - Adds a perfect prediction line (y=x)
+    - Calculates and displays MAE and RMSE metrics
+    - Includes grid and legend for better readability
+    
+    Args:
+        df (pandas.DataFrame): DataFrame containing predictions and true values
+        save_dir (pathlib.Path): Directory to save the plot
+    """
     coords = ['x', 'y', 'z']
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
     
@@ -19,7 +53,7 @@ def create_scatter_plots(df, save_dir):
         true_vals = df[f'{coord}_opt']
         pred_vals = df[f'pred_{coord}']
         
-        # Calculate errors
+        # Calculate error metrics
         mae = np.mean(np.abs(true_vals - pred_vals))
         mse = np.mean(np.square(true_vals - pred_vals))
         rmse = np.sqrt(mse)
@@ -43,7 +77,19 @@ def create_scatter_plots(df, save_dir):
     plt.close()
 
 def create_3d_trajectory_plot(df, save_dir):
-    """Create 3D plot showing predicted and true trajectories over time."""
+    """
+    Create 3D visualization of predicted and true trajectories.
+    
+    Features:
+    - Plots both true and predicted paths in 3D space
+    - Marks start and end points for orientation
+    - Generates views from multiple angles (every 45 degrees)
+    - Saves both static view and multiple angle views
+    
+    Args:
+        df (pandas.DataFrame): DataFrame containing trajectory coordinates
+        save_dir (pathlib.Path): Directory to save the plots
+    """
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(111, projection='3d')
     
@@ -78,7 +124,18 @@ def create_3d_trajectory_plot(df, save_dir):
     plt.close()
 
 def create_error_over_time_plot(df, save_dir):
-    """Create plot showing prediction error over time."""
+    """
+    Create plot showing how prediction errors vary over time.
+    
+    Features:
+    - Plots absolute error for each coordinate
+    - Shows temporal patterns in prediction accuracy
+    - Helps identify any systematic timing-related issues
+    
+    Args:
+        df (pandas.DataFrame): DataFrame containing predictions and timestamps
+        save_dir (pathlib.Path): Directory to save the plot
+    """
     coords = ['x', 'y', 'z']
     errors = pd.DataFrame()
     
@@ -101,7 +158,18 @@ def create_error_over_time_plot(df, save_dir):
     plt.close()
 
 def create_error_distribution_plot(df, save_dir):
-    """Create violin plots showing error distribution for each coordinate."""
+    """
+    Create violin plots showing the distribution of errors for each coordinate.
+    
+    Features:
+    - Shows full error distribution shape using violin plots
+    - Helps identify coordinate-specific error patterns
+    - Reveals potential biases or asymmetries in predictions
+    
+    Args:
+        df (pandas.DataFrame): DataFrame containing coordinate predictions
+        save_dir (pathlib.Path): Directory to save the plot
+    """
     coords = ['x', 'y', 'z']
     errors = []
     
@@ -123,6 +191,15 @@ def create_error_distribution_plot(df, save_dir):
     plt.close()
 
 def main():
+    """
+    Main execution function that creates all visualization plots.
+    
+    Workflow:
+    1. Loads prediction data
+    2. Creates output directory if needed
+    3. Generates all visualization plots
+    4. Prints summary of created plots
+    """
     print("Loading predictions...")
     df = load_predictions()
     
