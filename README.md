@@ -1,6 +1,6 @@
 # Drone Tracking with Fisheye Correction and 3D Coordinate Estimation
 
-This project processes drone video footage from two fisheye cameras to track drone positions and convert them into 3D coordinates aligned with OptiTrack measurements. It uses machine learning to achieve accurate coordinate conversion and provides comprehensive visualization tools for analysis.
+This project processes drone video footage from two fisheye cameras to track drone positions and convert them into 3D coordinates aligned with OptiTrack measurements. It uses machine learning to achieve accurate coordinate conversion.
 
 ## Project Structure
 
