@@ -91,10 +91,7 @@ python src/plotting/plot_results.py
 
 ## Results
 
-The machine learning model successfully converts fisheye camera coordinates to 3D OptiTrack coordinates with varying accuracy across dimensions:
-- Best performance in X-axis (3.5cm MAE)
-- Moderate performance in Z-axis (~12cm MAE)
-- Worst performance in Y-axis (16.3cm MAE)
+The machine learning model successfully converts YOLO data to 3D OptiTrack coordinates with varying accuracy across dimensions.
 
 Detailed visualizations of model performance can be found in the `data/plots/` directory.
 
