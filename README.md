@@ -1,45 +1,34 @@
-# Drone Tracking with Fisheye Correction and 3D Coordinate Estimation
+# Drone Tracking: 3D Coordinate Conversion from Fisheye Camera Data
 
-This project processes drone video footage from two fisheye cameras to track drone positions and convert them into 3D coordinates aligned with OptiTrack measurements. It uses machine learning to achieve accurate coordinate conversion.
+This project processes drone position data from two fisheye cameras and converts them into 3D coordinates aligned with OptiTrack measurements. It uses machine learning to achieve accurate coordinate conversion and provides comprehensive visualizations of model performance.
 
 ## Project Structure
 
 ```
-task_1/
+3d-Coordinate-Conversions/
 ├── data/
 │   ├── plots/          # Visualization outputs
 │   ├── predictions/    # Model predictions
 │   ├── processed/      # Processed coordinate data
-│   └── raw/           # Raw video and coordinate data
-├── models/            # Trained models and scalers
+│   └── raw/            # Raw coordinate data (YOLO, OptiTrack)
+├── models/             # Trained models and scalers
 └── src/
-    ├── preprocessing/ # Data preparation scripts
-    ├── modeling/      # ML model training and prediction
-    └── plotting/      # Visualization scripts
+    ├── preprocessing/  # Data preparation scripts
+    ├── modeling/       # ML model training and prediction
+    └── plotting/       # Visualization scripts
 ```
 
 ## Workflow
 
 ### 1. Data Preprocessing
 
-#### Frame Extraction and Correction
-**Script:** `src/preprocessing/frame_sampler.py`
-- Extracts 100 evenly spaced frames from drone videos
-- Applies fisheye correction using the `defisheye` library
-- Outputs 2160x2160 images at 96 DPI for consistent conversion
-
-#### Manual Position Labeling
-**Script:** `src/preprocessing/labeling.py`
-- Interactive tool for manually labeling drone positions
-- Normalizes and saves coordinates to Excel
-- Supports both left and right camera views
-
-#### Data Alignment and Formatting
 **Script:** `src/preprocessing/align_and_format.py`
-- Aligns timestamps between fisheye and OptiTrack data
-- Converts normalized coordinates to millimeters
-- Outputs aligned coordinate pairs to `input_coordinates.xlsx`
-- Successfully matched 96 coordinate pairs
+- Loads YOLO coordinate data from `data/raw/YOLO_Coordinates.xlsx`
+- Converts normalized coordinates to millimeters using camera calibration and transformation logic
+- Saves processed coordinates to `data/processed/YOLO_Coordinates_mm.xlsx`
+- (If needed, further alignment with OptiTrack data can be performed and saved as `input_coordinates.xlsx`)
+
+> **Note:** This project assumes that YOLO and OptiTrack coordinate data are already available in Excel format. Frame extraction and manual labeling are not included in this repository.
 
 ### 2. Machine Learning Model
 
@@ -51,19 +40,15 @@ task_1/
   - Multiple dense layers with batch normalization
   - Dropout layers for regularization
   - L2 regularization and Huber loss for stability
-- Achieved Mean Absolute Error (MAE) of ~11.1cm
+- Achieves Mean Absolute Error (MAE) of ~11.1cm (see Results below)
 - Saves trained model and scalers to `models/` directory
 
 #### Coordinate Prediction
 **Script:** `src/modeling/predict_and_export.py`
 - Loads trained model and scalers
-- Generates 3D coordinate predictions
-- Saves results to `mlp_predictions.xlsx`
-- Performance metrics:
-  - Overall MAE: 10.6cm
-  - X-coordinate MAE: 3.5cm
-  - Y-coordinate MAE: 16.3cm
-  - Z-coordinate MAE: ~12cm
+- Generates 3D coordinate predictions from processed input data
+- Saves results to `data/predictions/mlp_predictions.xlsx`
+- Prints performance metrics (MAE, RMSE) for each coordinate
 
 ### 3. Results Visualization
 **Script:** `src/plotting/plot_results.py`
@@ -115,3 +100,4 @@ Detailed visualizations of model performance can be found in the `data/plots/` d
 
 ## Notes
 - All coordinate measurements are in millimeters
+- Raw video processing and manual labeling are not included in this repository; the workflow starts from provided YOLO and OptiTrack Excel files.
