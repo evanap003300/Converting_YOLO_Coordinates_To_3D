@@ -1,4 +1,4 @@
-# Drone Tracking: 3D Coordinate Conversion from Fisheye Camera Data
+# Drone Tracking: 3D Coordinate Conversion from YOLO Predictions
 
 This project processes drone position data from two fisheye cameras and converts them into 3D coordinates aligned with OptiTrack measurements. It uses machine learning to achieve accurate coordinate conversion and provides comprehensive visualizations of model performance.
 
