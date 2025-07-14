@@ -40,7 +40,6 @@ This project processes drone position data from YOLO predictions converts them i
   - Multiple dense layers with batch normalization
   - Dropout layers for regularization
   - L2 regularization and Huber loss for stability
-- Achieves Mean Absolute Error (MAE) of ~11.1cm (see Results below)
 - Saves trained model and scalers to `models/` directory
 
 #### Coordinate Prediction
