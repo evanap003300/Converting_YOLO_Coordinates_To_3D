@@ -1,28 +1,37 @@
+"""
+align_and_format.py
+
+This script performs the initial data preprocessing for the drone tracking project.
+It loads raw YOLO (fisheye camera) coordinate data, converts normalized pixel coordinates
+to millimeters, and saves the processed data.
+
+Author: Evan Phillips
+Date: 2025-07-25
+"""
+
 import pandas as pd
 import numpy as np
 from pathlib import Path
-import sys
-import os
 
-# Add the parent directory to the Python path so we can import from modeling
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from modeling.convert import convert_pixles_to_mm
+def convert_pixles_to_mm(x, y):
+    new_x = x * (25.4/96)
+    new_y = y * (25.4/96)
+    return new_x, new_y
 
-def load_data():
-    """Load both input files."""
-    data_dir = Path(__file__).parents[2] / 'data'
-    
-    # Load fisheye coordinates
-    fisheye_path = data_dir / 'raw' / 'fisheye_coordinates.xlsx' # change the name of the file here 
-    fisheye_df = pd.read_excel(fisheye_path)
-    
-    
-    return fisheye_df
+def convert_normalized_to_mm(row: pd.Series, img_width: int = 3840, img_height: int = 2160) -> pd.Series:
+    """
+    Applies the pixel-to-millimeter conversion to a single row of coordinate data.
+    This function is designed to be used with DataFrame.apply().
 
-# image width and height may be wrong here 
-# old was 2160 by 2160 
-def convert_normalized_to_mm(row, img_width=3840, img_height=2160):
-    """Convert normalized coordinates to mm using the provided conversion function."""
+    Args:
+        row (pd.Series): A row from the DataFrame, expected to contain 'x1', 'y1', 'x2', 'y2'
+                         representing normalized pixel coordinates.
+        img_width (int): The width of the image in pixels (default: 3840).
+        img_height (int): The height of the image in pixels (default: 2160).
+
+    Returns:
+        pd.Series: A Series containing the converted 'x1', 'y1', 'x2', 'y2' coordinates in millimeters.
+    """
     px1 = row['x1'] 
     py1 = row['y1'] 
     px2 = row['x2'] 
@@ -41,7 +50,10 @@ def convert_normalized_to_mm(row, img_width=3840, img_height=2160):
 
 
 def main():
-    # Hardcoded input and output paths
+    """
+    Main function to orchestrate the data loading, coordinate conversion, and saving
+    of the processed data.
+    """
     input_path = Path(__file__).parents[2] / 'data' / 'raw' / 'YOLO_Coordinates.xlsx'
     output_path = Path(__file__).parents[2] / 'data' / 'processed' / 'YOLO_Coordinates_mm.xlsx'
 
