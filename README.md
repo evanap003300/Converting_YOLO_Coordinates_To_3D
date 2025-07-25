@@ -29,7 +29,7 @@ This repository contains all the code, data, and documentation necessary to repr
 ├── Figure4_Error_Distribution/
 ├── Figure5_Scatter_Plots/
 └── Figure6_Error_Over_Time/
-└── ... (Each subfolder contains data, code, and a README for that specific figure)
+└── ... (Each subfolder contains data and code for that specific figure)
 ```
 ## Workflow & Reproducibility
 
