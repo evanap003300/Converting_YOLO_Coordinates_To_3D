@@ -16,13 +16,11 @@ This repository contains all the code, data, and documentation necessary to repr
 │   └── raw/            # Raw input data (e.g., YOLO_Coordinates.xlsx, OptiTrack_Data.xlsx)
 ├── models/             # Trained ML models and scalers
 ├── src/
-│   ├── preprocessing/  # Data preparation scripts (e.g., align_and_format.py)
+│   ├── preprocessing/  # Data preparation scripts (e.g., align_and_format.py, now includes pixel-to-mm conversion)
 │   ├── modeling/       # ML model training and prediction scripts (e.g., train_model.py, predict_and_export.py)
 │   └── plotting/       # Visualization scripts (e.g., plot_results.py)
 ├── latex/              # LaTeX source files for the research paper
 │   ├── figures/        # Final figure image files (PNG/JPG) referenced by the .tex document 
-
-
 │   └── mlpuav-spie_v1.tex # Main LaTeX document for the paper
 └── making_figures/     # Self-contained subfolders for reproducing each paper figure
 ├── Figure1_Drone_Setup/
@@ -41,7 +39,7 @@ The workflow is designed to be highly reproducible. All code and data required f
 
 **Script:** `src/preprocessing/align_and_format.py`
 - Loads raw YOLO coordinate data from `data/raw/YOLO_Coordinates.xlsx`.
-- Converts normalized pixel coordinates to millimeters using an integrated conversion function.
+- **Integrates the pixel-to-millimeter conversion logic to transform normalized pixel coordinates to physical dimensions.**
 - Saves processed YOLO coordinates to `data/processed/YOLO_Coordinates_mm.xlsx`.
 
 > **Note on `input_coordinates.xlsx`:** The combined input data for model training and prediction (`input_coordinates.xlsx`, located in `data/raw/` and within `making_figures` subfolders) is derived from `YOLO_Coordinates_mm.xlsx` and `OptiTrack_Data.xlsx`. Due to challenges with missing data points (e.g., drone leaving the frame), a specific subsection of the data was manually selected and curated to create `input_coordinates.xlsx`. This manual step is acknowledged, and the curated file is provided directly in relevant `making_figures` subfolders for immediate reproducibility of results. The raw source files are included for context.
@@ -117,5 +115,5 @@ The LaTeX source code for the research paper, which includes all the integrated 
 The machine learning model successfully converts YOLO data to 3D OptiTrack coordinates, demonstrating varying accuracy across dimensions. Detailed visualizations of model performance can be found in the `data/plots/` directory, and are integrated into the LaTeX paper.
 
 ## Notes
-- All coordinate measurements are in millimeters.
-- Raw video processing and manual labeling are not included in this repository; the workflow starts from provided YOLO and OptiTrack Excel files.
+-   All coordinate measurements are in millimeters.
+-   Raw video processing and manual labeling are not included in this repository; the workflow starts from provided YOLO and OptiTrack Excel files.
