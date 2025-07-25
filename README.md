@@ -16,8 +16,8 @@ This repository contains all the code, data, and documentation necessary to repr
 │   └── raw/            # Raw input data (e.g., YOLO_Coordinates.xlsx, OptiTrack_Data.xlsx)
 ├── models/             # Trained ML models and scalers
 ├── src/
-│   ├── preprocessing/  # Data preparation scripts
-│   ├── modeling/       # ML model training and prediction scripts
+│   ├── preprocessing/  # Data preparation scripts (e.g., align_and_format.py)
+│   ├── modeling/       # ML model training and prediction scripts (e.g., train_model.py, predict_and_export.py)
 │   └── plotting/       # Visualization scripts (e.g., plot_results.py)
 ├── latex/              # LaTeX source files for the research paper
 │   ├── figures/        # Final figure image files (PNG/JPG) referenced by the .tex document 
@@ -40,8 +40,8 @@ The workflow is designed to be highly reproducible. All code and data required f
 ### 1. Data Preprocessing
 
 **Script:** `src/preprocessing/align_and_format.py`
-- Loads YOLO coordinate data from `data/raw/YOLO_Coordinates.xlsx`.
-- Converts normalized coordinates to millimeters using camera calibration and transformation logic.
+- Loads raw YOLO coordinate data from `data/raw/YOLO_Coordinates.xlsx`.
+- Converts normalized pixel coordinates to millimeters using an integrated conversion function.
 - Saves processed YOLO coordinates to `data/processed/YOLO_Coordinates_mm.xlsx`.
 
 > **Note on `input_coordinates.xlsx`:** The combined input data for model training and prediction (`input_coordinates.xlsx`, located in `data/raw/` and within `making_figures` subfolders) is derived from `YOLO_Coordinates_mm.xlsx` and `OptiTrack_Data.xlsx`. Due to challenges with missing data points (e.g., drone leaving the frame), a specific subsection of the data was manually selected and curated to create `input_coordinates.xlsx`. This manual step is acknowledged, and the curated file is provided directly in relevant `making_figures` subfolders for immediate reproducibility of results. The raw source files are included for context.

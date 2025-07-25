@@ -1,10 +1,13 @@
 """
+plot_results.py
+
 This script creates comprehensive visualizations of the ML model's performance in converting
-fisheye camera coordinates to 3D OptiTrack coordinates. It generates multiple types of plots
-to analyze prediction accuracy, error distributions, and trajectory comparisons.
+fisheye camera (2D YOLO) coordinates to 3D OptiTrack coordinates. It generates various plots
+to analyze prediction accuracy, error distributions, and trajectory comparisons, adhering
+to specified lab style guidelines for publication.
 
 Author: Evan Phillips
-Date: 2025
+Date: 2025-07-25
 """
 
 import pandas as pd
@@ -34,11 +37,28 @@ sns.set_palette("tab10")  # For categorical variables like coordinates
 plt.close('all')
 # ========================================================
 
-def load_predictions():
+def load_predictions() -> pd.DataFrame:
+    """
+    Loads the MLP model's 3D coordinate predictions from an Excel file.
+
+    Args:
+        base_path (Path): The base path of the project (e.g., the root of the GitHub repo clone).
+
+    Returns:
+        pd.DataFrame: DataFrame containing true and predicted 3D coordinates.
+    """
     data_path = Path(__file__).parents[2] / 'data' / 'predictions' / 'mlp_predictions.xlsx'
     return pd.read_excel(data_path)
 
-def create_scatter_plots(df, save_dir):
+def create_scatter_plots(df: pd.DataFrame, save_dir: Path):
+    """
+    Generates scatter plots comparing true vs. predicted coordinates for X, Y, and Z.
+    Saved as 'Figure5_Scatter_Plots.png'.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing true and predicted coordinates.
+        save_dir (Path): Directory where the plot images will be saved.
+    """
     coords = ['x', 'y', 'z']
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
@@ -66,7 +86,15 @@ def create_scatter_plots(df, save_dir):
     plt.savefig(save_dir / 'scatter_plots.png', dpi=300, bbox_inches='tight')
     plt.close()
 
-def create_3d_trajectory_plot(df, save_dir):
+def create_3d_trajectory_plot(df: pd.DataFrame, save_dir: Path):
+    """
+    Generates a 3D trajectory comparison plot of true vs. predicted paths.
+    Saved as 'Figure3_3D_Trajectory.png'. Also generates multi-angle views.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing true and predicted coordinates.
+        save_dir (Path): Directory where the plot images will be saved.
+    """
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(111, projection='3d')
 
@@ -94,7 +122,15 @@ def create_3d_trajectory_plot(df, save_dir):
 
     plt.close()
 
-def create_error_over_time_plot(df, save_dir):
+def create_error_over_time_plot(df: pd.DataFrame, save_dir: Path):
+    """
+    Generates a plot showing prediction error over time for X, Y, and Z coordinates.
+    Saved as 'Figure6_Error_Over_Time.png'.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing true and predicted coordinates.
+        save_dir (Path): Directory where the plot images will be saved.
+    """
     coords = ['x', 'y', 'z']
     errors = pd.DataFrame()
 
@@ -114,7 +150,15 @@ def create_error_over_time_plot(df, save_dir):
     plt.savefig(save_dir / 'error_over_time.png', dpi=300, bbox_inches='tight')
     plt.close()
 
-def create_error_distribution_plot(df, save_dir):
+def create_error_distribution_plot(df: pd.DataFrame, save_dir: Path):
+    """
+    Generates a violin plot visualizing the distribution of absolute errors by coordinate axis.
+    Saved as 'Figure4_Error_Distribution.png'.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing true and predicted coordinates.
+        save_dir (Path): Directory where the plot images will be saved.
+    """
     coords = ['x', 'y', 'z']
     errors = []
 
@@ -134,6 +178,9 @@ def create_error_distribution_plot(df, save_dir):
     plt.close()
 
 def main():
+    """
+    Main function to orchestrate the loading of data and generation of all plots.
+    """
     print("Loading predictions...")
     df = load_predictions()
 
