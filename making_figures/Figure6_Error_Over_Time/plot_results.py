@@ -192,21 +192,21 @@ def main():
     #print("Creating scatter plots...")
     #create_scatter_plots(df, plots_dir)
 
-    print("Creating 3D trajectory plot...")
-    create_3d_trajectory_plot(df, plots_dir)
+    #print("Creating 3D trajectory plot...")
+    #create_3d_trajectory_plot(df, plots_dir)
 
-    #print("Creating error over time plot...")
-    #create_error_over_time_plot(df, plots_dir)
+    print("Creating error over time plot...")
+    create_error_over_time_plot(df, plots_dir)
 
     #print("Creating error distribution plot...")
     #create_error_distribution_plot(df, plots_dir)
 
     print(f"\nAll plots have been saved to {plots_dir}")
-    print("\nPlot descriptions:")
+    #print("\nPlot descriptions:")
     #print("1. scatter_plots.png: Predicted vs true values for each coordinate")
-    print("2. 3d_trajectory.png: 3D trajectory comparison (true vs predicted)")
-    print("3. 3d_trajectory_angle_*.png: Multi-angle views of trajectory")
-    #print("4. error_over_time.png: Error variation across time")
+    #print("2. 3d_trajectory.png: 3D trajectory comparison (true vs predicted)")
+    #print("3. 3d_trajectory_angle_*.png: Multi-angle views of trajectory")
+    print("4. error_over_time.png: Error variation across time")
     #print("5. error_distribution.png: Error distribution across coordinates")
 
 if __name__ == "__main__":

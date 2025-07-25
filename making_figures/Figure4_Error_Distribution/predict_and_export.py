@@ -28,7 +28,8 @@ def load_model_and_scalers() -> tuple[tf.keras.Model, object, object]:
             - y_scaler (joblib.NumpyArrayFile): The scaler used for output (target) coordinates.
     """
     
-    models_dir = Path(__file__).parents[2] / 'models'
+    # models_dir = Path(__file__).parents[2] / 'models'
+    models_dir = Path('./')  # Updated to allow for output in the same folder for figure replication
     
     # Load model
     model_path = models_dir / 'mlp_converter.keras'
@@ -51,7 +52,8 @@ def load_data() -> pd.DataFrame:
     """
 
     # Load the input coordinates file
-    data_path = Path(__file__).parents[2] / 'data' / 'processed' / 'input_coordinates.xlsx'
+    # data_path = Path(__file__).parents[2] / 'data' / 'processed' / 'input_coordinates.xlsx'
+    data_path = Path('./') / 'input_coordinates.xlsx' # Updated to work for files in this dir
     return pd.read_excel(data_path)
 
 def make_predictions(model: tf.keras.Model, x_scaler: object, 
@@ -176,7 +178,8 @@ def main():
     calculate_errors(output_df)
     
     # Create predictions directory if it doesn't exist
-    predictions_dir = Path(__file__).parents[2] / 'data' / 'predictions'
+    # predictions_dir = Path(__file__).parents[2] / 'data' / 'predictions'
+    predictions_dir = Path('./') # Outputs in this dir
     predictions_dir.mkdir(exist_ok=True)
     
     # Save predictions
