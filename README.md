@@ -64,7 +64,7 @@ The workflow is designed to be highly reproducible. All code and data required f
 **Script:** `src/plotting/plot_results.py`
 - Creates comprehensive visualizations based on the model's predictions.
 - Generates various plots including scatter comparisons, 3D trajectories, and error analyses.
-- **Figures are styled for publication** (e.g., font sizes, colormaps, DPI]).
+- **Figures are styled for publication** (e.g., font sizes, colormaps, DPI).
 - All generated plots are saved to the `data/plots/` directory.
 - **Final figures used in the LaTeX document are copied from `data/plots/` to `latex/figures/` for direct inclusion in the paper .**
 
