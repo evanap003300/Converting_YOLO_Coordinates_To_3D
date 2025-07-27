@@ -28,7 +28,7 @@ plt.rcParams.update({
         'Century Schoolbook L', 'Utopia', 'ITC Bookman', 'Bookman',
         'Nimbus Roman No9 L', 'Palatino', 'Charter', 'serif'
     ],
-    'font.size': 10,
+    'font.size': 8, 
     'mathtext.rm': 'serif',
     'mathtext.fontset': 'custom',
     'image.cmap': 'viridis'
@@ -41,9 +41,6 @@ def load_predictions() -> pd.DataFrame:
     """
     Loads the MLP model's 3D coordinate predictions from an Excel file.
 
-    Args:
-        base_path (Path): The base path of the project (e.g., the root of the GitHub repo clone).
-
     Returns:
         pd.DataFrame: DataFrame containing true and predicted 3D coordinates.
     """
@@ -52,17 +49,21 @@ def load_predictions() -> pd.DataFrame:
 
 def create_scatter_plots(df: pd.DataFrame, save_dir: Path):
     """
-    Generates scatter plots comparing true vs. predicted coordinates for X, Y, and Z.
-    Saved as 'Figure5_Scatter_Plots.png'.
+    Generates individual scatter plots for X, Y, and Z coordinates,
+    including MAE and RMSE in the title.
+    Saved as 'Figure5_Scatter_X.png', 'Figure5_Scatter_Y.png', 'Figure5_Scatter_Z.png'.
 
     Args:
         df (pd.DataFrame): DataFrame containing true and predicted coordinates.
         save_dir (Path): Directory where the plot images will be saved.
     """
     coords = ['x', 'y', 'z']
-    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+    
+    single_plot_figsize = (6.5, 4.8)
 
-    for i, coord in enumerate(coords):
+    for coord in coords:
+        fig, ax = plt.subplots(1, 1, figsize=single_plot_figsize) # Create a single subplot figure
+
         true_vals = df[f'{coord}_opt']
         pred_vals = df[f'pred_{coord}']
 
@@ -70,21 +71,26 @@ def create_scatter_plots(df: pd.DataFrame, save_dir: Path):
         mse = np.mean(np.square(true_vals - pred_vals))
         rmse = np.sqrt(mse)
 
-        axes[i].scatter(true_vals, pred_vals, alpha=0.5, label='Prediction')
+        ax.scatter(true_vals, pred_vals, alpha=0.6, label='Prediction')
 
         min_val = min(true_vals.min(), pred_vals.min())
         max_val = max(true_vals.max(), pred_vals.max())
-        axes[i].plot([min_val, max_val], [min_val, max_val], 'r--', label='Perfect Prediction')
+        ax.plot([min_val, max_val], [min_val, max_val], 'r--', label='Perfect Prediction')
 
-        axes[i].set_xlabel(f'True {coord.upper()}~(mm)')
-        axes[i].set_ylabel(f'Predicted {coord.upper()}~(mm)')
-        axes[i].set_title(f'{coord.upper()} coordinate: MAE = {mae:.2f}~mm, RMSE = {rmse:.2f}~mm')
-        axes[i].grid(True)
-        axes[i].legend()
+        ax.set_xlabel(f'True {coord.upper()} (mm)')
+        ax.set_ylabel(f'Predicted {coord.upper()} (mm)')
+        
+        ax.set_title(f'{coord.upper()} Coordinate\nMAE = {mae:.2f} mm, RMSE = {rmse:.2f} mm',
+                     fontsize=plt.rcParams['axes.titlesize'])
+        # --------------------------------------------------------
+        
+        ax.grid(True)
+        # Place legend inside the plot, but in a corner to avoid data overlap
+        ax.legend(loc='upper left', frameon=True) 
 
-    plt.tight_layout()
-    plt.savefig(save_dir / 'scatter_plots.png', dpi=300, bbox_inches='tight')
-    plt.close()
+        plt.tight_layout() # Ensure tight layout for this single plot
+        plt.savefig(save_dir / f'Figure5_Scatter_{coord.upper()}.png', dpi=300, bbox_inches='tight')
+        plt.close(fig) # Close the figure to free memory
 
 def create_3d_trajectory_plot(df: pd.DataFrame, save_dir: Path):
     """
@@ -95,7 +101,7 @@ def create_3d_trajectory_plot(df: pd.DataFrame, save_dir: Path):
         df (pd.DataFrame): DataFrame containing true and predicted coordinates.
         save_dir (Path): Directory where the plot images will be saved.
     """
-    fig = plt.figure(figsize=(12, 8))
+    fig = plt.figure(figsize=(8.0, 5.0))
     ax = fig.add_subplot(111, projection='3d')
 
     ax.plot(df['x_opt'], df['y_opt'], df['z_opt'],
@@ -108,19 +114,40 @@ def create_3d_trajectory_plot(df: pd.DataFrame, save_dir: Path):
     ax.scatter(df['x_opt'].iloc[-1], df['y_opt'].iloc[-1], df['z_opt'].iloc[-1],
                color='red', s=100, label='End')
 
-    ax.set_xlabel('X~(mm)')
-    ax.set_ylabel('Y~(mm)')
-    ax.set_zlabel('Z~(mm)')
-    ax.set_title('3D trajectory comparison')
-    ax.legend()
+    ax.set_xlabel('X~(mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5) 
+    ax.set_ylabel('Y~(mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5) 
+    ax.set_zlabel('Z~(mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5) 
+    
+    # Set title with padding
+    ax.set_title('3D trajectory comparison', fontsize=plt.rcParams['axes.titlesize'], pad=15)
+    
+    # Set legend font size
+    ax.legend(fontsize=plt.rcParams['legend.fontsize'])
 
-    plt.savefig(save_dir / '3d_trajectory.png', dpi=300, bbox_inches='tight')
+    # X-axis
+    ax.tick_params(axis='x', pad=2, labelsize=plt.rcParams['xtick.labelsize'])
+    ax.xaxis.set_tick_params(rotation=20) 
+    ax.xaxis.set_major_locator(plt.MaxNLocator(nbins=6))
 
-    for angle in range(0, 360, 45):
-        ax.view_init(elev=20, azim=angle)
-        plt.savefig(save_dir / f'3d_trajectory_angle_{angle}.png', dpi=300, bbox_inches='tight')
+    # Y-axis
+    ax.tick_params(axis='y', pad=2, labelsize=plt.rcParams['ytick.labelsize'])
+    ax.yaxis.set_tick_params(rotation=-20) 
+    ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=6))
 
-    plt.close()
+    # Z-axis
+    ax.tick_params(axis='z', pad=2, labelsize=plt.rcParams.get('ztick.labelsize', plt.rcParams['ytick.labelsize']))
+    ax.zaxis.set_major_locator(plt.MaxNLocator(nbins=6))
+
+    ax.view_init(elev=25, azim=315) 
+
+    # Use tight_layout with a 'rect' to control the boundaries of the plot area within the figure.
+    plt.tight_layout(rect=[0.05, 0.05, 0.95, 0.95]) 
+    
+    plt.savefig(save_dir / 'Figure3_3D_Trajectory.png', dpi=300)
+    plt.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])
+    plt.savefig(save_dir / 'Figure3_3D_Trajectory.png', dpi=300)
+
+    plt.close(fig) # Close the figure
 
 def create_error_over_time_plot(df: pd.DataFrame, save_dir: Path):
     """
@@ -137,7 +164,7 @@ def create_error_over_time_plot(df: pd.DataFrame, save_dir: Path):
     for coord in coords:
         errors[coord] = np.abs(df[f'{coord}_opt'] - df[f'pred_{coord}'])
 
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(6.5, 3.25)) # Updated for latex 
     for coord in coords:
         plt.plot(df['time'], errors[coord], label=f'{coord.upper()} error')
 
@@ -147,7 +174,7 @@ def create_error_over_time_plot(df: pd.DataFrame, save_dir: Path):
     plt.grid(True)
     plt.legend()
 
-    plt.savefig(save_dir / 'error_over_time.png', dpi=300, bbox_inches='tight')
+    plt.savefig(save_dir / 'Figure6_Error_Over_Time.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def create_error_distribution_plot(df: pd.DataFrame, save_dir: Path):
@@ -168,13 +195,13 @@ def create_error_distribution_plot(df: pd.DataFrame, save_dir: Path):
 
     error_df = pd.DataFrame(errors, columns=['Coordinate', 'Absolute Error'])
 
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(6.5, 3.9)) # Updated for latex
     sns.violinplot(data=error_df, x='Coordinate', y='Absolute Error')
     plt.title('Error distribution by coordinate')
     plt.ylabel('Absolute error~(mm)')
     plt.grid(True)
 
-    plt.savefig(save_dir / 'error_distribution.png', dpi=300, bbox_inches='tight')
+    plt.savefig(save_dir / 'Figure4_Error_Distribution.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def main():
