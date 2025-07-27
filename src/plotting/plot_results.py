@@ -228,11 +228,10 @@ def main():
 
     print(f"\nAll plots have been saved to {plots_dir}")
     print("\nPlot descriptions:")
-    print("1. scatter_plots.png: Predicted vs true values for each coordinate")
-    print("2. 3d_trajectory.png: 3D trajectory comparison (true vs predicted)")
-    print("3. 3d_trajectory_angle_*.png: Multi-angle views of trajectory")
-    print("4. error_over_time.png: Error variation across time")
-    print("5. error_distribution.png: Error distribution across coordinates")
+    print("1. Figure5_Scatter_(dim).png: Predicted vs true values for each coordinate")
+    print("2. Figure3_3D_Trajectory.png: 3D trajectory comparison (true vs predicted)")
+    print("4. Figure6_Error_Over_Time.png: Error variation across time")
+    print("5. Figure4_Error_Distribution.png: Error distribution across coordinates")
 
 if __name__ == "__main__":
     main()

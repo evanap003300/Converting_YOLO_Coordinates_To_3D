@@ -64,14 +64,17 @@ def create_error_distribution_plot(df: pd.DataFrame, save_dir: Path):
 
     for coord in coords:
         error = np.abs(df[f'{coord}_opt'] - df[f'pred_{coord}'])
-        errors.extend([(coord.upper(), e) for e in error])
+        errors.extend([(f'{coord}', e) for e in error])
 
-    error_df = pd.DataFrame(errors, columns=['Coordinate', 'Absolute Error'])
+    error_df = pd.DataFrame(errors, columns=['coordinate', 'Absolute Error'])
 
-    plt.figure(figsize=(6.5, 3.9)) # Updated for latex
-    sns.violinplot(data=error_df, x='Coordinate', y='Absolute Error')
-    plt.title('Error distribution by coordinate')
-    plt.ylabel('Absolute error~(mm)')
+    fig, ax = plt.subplots(figsize=(6.5, 3.9)) # Updated for latex
+    
+    ax.set_axisbelow(True)
+
+    sns.violinplot(data=error_df, x='coordinate', y='Absolute Error', inner=None, ax=ax, saturation=1)
+    # plt.title('Error distribution by coordinate')
+    plt.ylabel('absolute error~(mm)')
     plt.grid(True)
 
     plt.savefig(save_dir / 'Figure4_Error_Distribution.png', dpi=300, bbox_inches='tight')

@@ -72,12 +72,11 @@ def create_3d_trajectory_plot(df: pd.DataFrame, save_dir: Path):
     ax.scatter(df['x_opt'].iloc[-1], df['y_opt'].iloc[-1], df['z_opt'].iloc[-1],
                color='red', s=100, label='End')
 
-    ax.set_xlabel('X~(mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5) 
-    ax.set_ylabel('Y~(mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5) 
-    ax.set_zlabel('Z~(mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5) 
+    ax.set_xlabel(r'$\mathit{x}$ (mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5)
+    ax.set_ylabel(r'$\mathit{y}$ (mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5)
+    ax.set_zlabel(r'$\mathit{z}$ (mm)', fontsize=plt.rcParams['axes.labelsize'], labelpad=5)
+ 
     
-    # Set title with padding
-    ax.set_title('3D trajectory comparison', fontsize=plt.rcParams['axes.titlesize'], pad=15)
     
     # Set legend font size
     ax.legend(fontsize=plt.rcParams['legend.fontsize'])

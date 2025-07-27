@@ -52,48 +52,41 @@ def load_predictions() -> pd.DataFrame:
 
 def create_scatter_plots(df: pd.DataFrame, save_dir: Path):
     """
-    Generates individual scatter plots for X, Y, and Z coordinates,
-    including MAE and RMSE in the title.
-    Saved as 'Figure5_Scatter_X.png', 'Figure5_Scatter_Y.png', 'Figure5_Scatter_Z.png'.
-
-    Args:
-        df (pd.DataFrame): DataFrame containing true and predicted coordinates.
-        save_dir (Path): Directory where the plot images will be saved.
+    Generates a combined figure with three subplots (x, y, z) showing predicted vs. true values.
+    Saved as 'Figure5_Scatter.png'.
     """
     coords = ['x', 'y', 'z']
+    fig, axes = plt.subplots(1, 3, figsize=(7.0, 2.2), sharex=False, sharey=False)
     
-    single_plot_figsize = (6.5, 4.8)
-
-    for coord in coords:
-        fig, ax = plt.subplots(1, 1, figsize=single_plot_figsize) # Create a single subplot figure
+    for i, coord in enumerate(coords):
+        ax = axes[i]
+        ax.set_axisbelow(True)
 
         true_vals = df[f'{coord}_opt']
         pred_vals = df[f'pred_{coord}']
 
         mae = np.mean(np.abs(true_vals - pred_vals))
-        mse = np.mean(np.square(true_vals - pred_vals))
-        rmse = np.sqrt(mse)
+        rmse = np.sqrt(np.mean((true_vals - pred_vals) ** 2))
 
-        ax.scatter(true_vals, pred_vals, alpha=0.6, label='Prediction')
-
+        ax.scatter(true_vals, pred_vals, alpha=0.6, label='prediction', s=10)
+        
+        # Perfect prediction line
         min_val = min(true_vals.min(), pred_vals.min())
         max_val = max(true_vals.max(), pred_vals.max())
-        ax.plot([min_val, max_val], [min_val, max_val], 'r--', label='Perfect Prediction')
+        ax.plot([min_val, max_val], [min_val, max_val], 'r--', linewidth=1)
 
-        ax.set_xlabel(f'True {coord.upper()} (mm)')
-        ax.set_ylabel(f'Predicted {coord.upper()} (mm)')
-        
-        ax.set_title(f'{coord.upper()} Coordinate\nMAE = {mae:.2f} mm, RMSE = {rmse:.2f} mm',
-                     fontsize=plt.rcParams['axes.titlesize'])
-        # --------------------------------------------------------
-        
+        ax.set_xlabel(rf'true {coord}~(mm)')
+        ax.set_ylabel(rf'predicted {coord}~(mm)')  # Label all y-axes
+
         ax.grid(True)
-        # Place legend inside the plot, but in a corner to avoid data overlap
-        ax.legend(loc='upper left', frameon=True) 
+        
+        # Subfigure label (a), (b), (c)
+        ax.text(0.02, 0.95, f'({chr(97+i)})', transform=ax.transAxes,
+                fontsize=plt.rcParams['font.size'], va='top', ha='left')
 
-        plt.tight_layout() # Ensure tight layout for this single plot
-        plt.savefig(save_dir / f'Figure5_Scatter_{coord.upper()}.png', dpi=300, bbox_inches='tight')
-        plt.close(fig) # Close the figure to free memory
+    plt.tight_layout(w_pad=2)
+    plt.savefig(save_dir / 'Figure5_Scatter.png', dpi=300, bbox_inches='tight')
+    plt.close(fig)
 
 def main():
     """
@@ -110,7 +103,7 @@ def main():
 
     print(f"\nPlots have been saved to {plots_dir}")
     print("\nPlot description:")
-    print("Figure5_Scatter_Plots_(Dim).png: Predicted vs true values for each coordinate")
+    print("Figure5_Scatter.png: Predicted vs true values for each coordinate")
 
 if __name__ == "__main__":
     main()
